@@ -1,1 +1,242 @@
+# Brute Force Authentication Detection
 
+## Detection Overview
+
+This detection identifies repeated failed Windows authentication attempts originating from the same source IP address within a defined time window.
+
+The purpose of this detection is to identify potential brute-force attacks, password guessing campaigns, or automated authentication attempts targeting Windows systems.
+
+---
+
+# Detection Metadata
+
+| Property | Value |
+|----------|-------|
+| Detection Name | Brute Force Authentication |
+| Severity | High |
+| Status | Active |
+| Platform | Microsoft Sentinel |
+| Language | Kusto Query Language (KQL) |
+| Data Source | Windows Security Events |
+| Event ID | 4625 |
+| MITRE ATT&CK | T1110 - Brute Force |
+| Category | Credential Access |
+
+---
+
+# Detection Objective
+
+Identify source IP addresses generating an unusually high number of failed logon attempts within a short period of time.
+
+The detection aims to:
+
+- Detect password guessing
+- Detect credential stuffing
+- Detect brute-force attacks
+- Support SOC investigations
+- Generate actionable security alerts
+
+---
+
+# Detection Logic
+
+The query performs the following actions:
+
+1. Searches Windows Security Event Logs.
+2. Filters failed authentication events (Event ID 4625).
+3. Groups activity by source IP.
+4. Counts failed attempts.
+5. Calculates the first and last observed activity.
+6. Returns only IP addresses exceeding the configured threshold.
+
+---
+
+# KQL Detection Query
+
+```kusto
+SecurityEvent
+| where EventID == 4625
+| where isnotempty(IpAddress)
+| summarize
+    FailedAttempts = count(),
+    FirstSeen = min(TimeGenerated),
+    LastSeen = max(TimeGenerated),
+    TargetedAccounts = dcount(Account)
+    by IpAddress
+| where FailedAttempts >= 20
+| order by FailedAttempts desc
+```
+
+---
+
+# Query Breakdown
+
+### Filter Authentication Failures
+
+```kusto
+| where EventID == 4625
+```
+
+Returns only failed Windows logon events.
+
+---
+
+### Remove Empty Source Addresses
+
+```kusto
+| where isnotempty(IpAddress)
+```
+
+Eliminates incomplete authentication records.
+
+---
+
+### Aggregate Events
+
+```kusto
+summarize
+```
+
+Groups multiple authentication attempts into a single record.
+
+---
+
+### Count Attempts
+
+```kusto
+FailedAttempts=count()
+```
+
+Counts failed logons originating from each IP address.
+
+---
+
+### Threshold
+
+```kusto
+FailedAttempts >=20
+```
+
+Only suspicious activity exceeding the defined threshold is returned.
+
+Thresholds should be adjusted according to organizational baseline behavior.
+
+---
+
+# Example Output
+
+| Source IP | Failed Attempts | Targeted Accounts |
+|------------|----------------|-------------------|
+| 185.xxx.xxx.xxx | 248 | 6 |
+| 41.xxx.xxx.xxx | 126 | 3 |
+| 103.xxx.xxx.xxx | 89 | 2 |
+
+---
+
+# MITRE ATT&CK Mapping
+
+| Tactic | Technique |
+|---------|-----------|
+| Credential Access | Brute Force (T1110) |
+
+Reference:
+
+https://attack.mitre.org/techniques/T1110/
+
+---
+
+# Investigation Guidance
+
+After this alert triggers, analysts should:
+
+- Review affected user accounts.
+- Determine whether authentication eventually succeeded.
+- Investigate the source IP address.
+- Check for geographic anomalies.
+- Review previous authentication history.
+- Determine whether additional systems were targeted.
+
+---
+
+# Potential False Positives
+
+The following activity may generate similar patterns:
+
+- Users repeatedly entering incorrect passwords.
+- Password expiration events.
+- Misconfigured scheduled tasks.
+- Legacy applications using outdated credentials.
+- Vulnerability scanners.
+- Administrative testing.
+
+---
+
+# Recommended Response
+
+If malicious activity is confirmed:
+
+- Block offending IP address.
+- Disable compromised account.
+- Force password reset.
+- Require Multi-Factor Authentication.
+- Investigate additional authentication logs.
+- Review lateral movement activity.
+- Search for persistence mechanisms.
+
+---
+
+# Query Performance Considerations
+
+Performance may be improved by:
+
+- Applying time filters.
+- Filtering known internal IP ranges.
+- Excluding service accounts.
+- Restricting returned columns.
+- Optimizing summarize operations.
+
+---
+
+# Suggested Analytics Rule
+
+| Setting | Value |
+|----------|-------|
+| Frequency | Every 5 minutes |
+| Lookup Period | 15 minutes |
+| Threshold | 20 Failed Attempts |
+| Severity | High |
+| Create Incident | Yes |
+
+---
+
+# Related Detections
+
+- Successful Logon After Multiple Failures
+- Password Spray Detection
+- Suspicious Remote Desktop Activity
+- Privileged Account Logon
+- Impossible Travel Authentication
+
+---
+
+# References
+
+Microsoft Sentinel Documentation
+
+https://learn.microsoft.com/azure/sentinel/
+
+MITRE ATT&CK
+
+https://attack.mitre.org/techniques/T1110/
+
+Windows Security Event 4625
+
+https://learn.microsoft.com/windows/security/threat-protection/auditing/event-4625
+
+---
+
+# Summary
+
+This detection identifies repeated failed Windows authentication attempts that may indicate brute-force or password guessing activity.
+
+When combined with additional detections such as successful authentication, privileged account monitoring, and remote desktop analysis, it provides an effective first layer of defense against credential-based attacks.

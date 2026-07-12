@@ -1,0 +1,69 @@
+# Failed Logon Analysis
+
+## Overview
+
+This query identifies failed Windows authentication attempts by filtering Security Events for Event ID **4625**. Failed logons are commonly associated with password guessing, brute-force attacks, expired credentials, or misconfigured services.
+
+Monitoring these events allows security analysts to identify suspicious authentication patterns and investigate potential credential attacks.
+
+---
+
+## Purpose
+
+- Detect repeated failed authentication attempts
+- Identify accounts experiencing login failures
+- Support brute-force investigations
+- Establish authentication baselines
+
+---
+
+## Data Source
+
+| Property | Value |
+|----------|-------|
+| Log Source | Windows Security Events |
+| Table | SecurityEvent |
+| Event ID | 4625 |
+| Platform | Microsoft Sentinel |
+
+---
+
+## KQL Query
+
+```kusto
+SecurityEvent
+| where EventID == 4625
+| project TimeGenerated, Computer, Account, IPAddress, Activity
+| order by TimeGenerated desc
+```
+
+---
+
+## Expected Output
+
+The query returns:
+
+- Timestamp
+- Username
+- Computer Name
+- Source IP Address
+- Authentication Activity
+
+---
+
+## Investigation Guidance
+
+When reviewing results, analysts should:
+
+- Look for repeated authentication failures.
+- Identify source IP addresses generating multiple failures.
+- Determine whether failures target a single account or multiple accounts.
+- Investigate any successful logons occurring after repeated failures.
+
+---
+
+## MITRE ATT&CK Mapping
+
+| Tactic | Technique |
+|---------|-----------|
+| Credential Access | T1110 - Brute Force |

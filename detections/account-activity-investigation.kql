@@ -1,0 +1,71 @@
+# Account Activity Investigation
+
+## Overview
+
+This query provides a detailed timeline of activity associated with a selected Windows account. By projecting key fields such as timestamp, computer name, event ID, activity description, and source IP address, analysts can quickly reconstruct user activity during an investigation.
+
+---
+
+## Purpose
+
+- Build an authentication timeline
+- Identify affected systems
+- Review event types
+- Correlate user activity
+
+---
+
+## Data Source
+
+| Property | Value |
+|----------|-------|
+| Table | SecurityEvent |
+| Platform | Microsoft Sentinel |
+
+---
+
+## KQL Query
+
+```kusto
+SecurityEvent
+| where Account == "\\FAGNER"
+| project TimeGenerated,
+          Account,
+          Computer,
+          EventID,
+          Activity,
+          IPAddress
+| order by TimeGenerated desc
+```
+
+---
+
+## Output Fields
+
+| Field | Description |
+|--------|-------------|
+| TimeGenerated | Event timestamp |
+| Account | Username |
+| Computer | Hostname |
+| EventID | Windows Event ID |
+| Activity | Authentication event |
+| IPAddress | Source IP |
+
+---
+
+## Investigation Guidance
+
+Use this query to:
+
+- Review chronological activity.
+- Identify suspicious logons.
+- Determine the systems accessed.
+- Correlate events with other security logs.
+
+---
+
+## MITRE ATT&CK Mapping
+
+| Tactic | Technique |
+|---------|-----------|
+| Valid Accounts | T1078 |

@@ -8,7 +8,7 @@ The environment was built in Microsoft Azure to collect, centralize, and analyze
 
 The primary data flow was:
 
-**Internet Activity → Azure Network Layer → Honeypot VM → Security Telemetry → Log Analytics Workspace → Microsoft Sentinel → KQL Analysis → Detection and Investigation**
+Internet Activity → Azure Network Layer → Honeypot VM → Security Telemetry → Log Analytics Workspace → Microsoft Sentinel → KQL Analysis → Detection and Investigation
 
 ---
 
@@ -18,7 +18,7 @@ The Azure virtual machine was exposed to the public internet within a controlled
 
 This allowed the system to receive real-world unsolicited connection and authentication attempts from automated scanners and credential-guessing infrastructure.
 
-During the observation period, the environment recorded more than **52,000 authentication attempts within approximately 30 minutes**.
+During the observation period, the environment recorded more than 52,000 authentication attempts within approximately 30 minutes.
 
 The purpose of exposing the system was not to attack external infrastructure, but to observe and analyze inbound activity directed toward a system owned and controlled by the project author.
 
@@ -59,7 +59,7 @@ Windows Security Event Logs provided the authentication telemetry used for threa
 
 A key event used during the investigation was:
 
-**Windows Event ID 4625 — An account failed to log on**
+Windows Event ID 4625 — An account failed to log on
 
 This event was used to identify repeated failed authentication attempts and analyze potential brute-force activity.
 

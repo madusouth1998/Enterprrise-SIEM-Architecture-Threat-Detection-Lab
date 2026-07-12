@@ -1,0 +1,67 @@
+# Account Investigation
+
+## Overview
+
+This query searches for all Windows Security Events associated with a specific user account. It is useful during incident response when investigating the activity of a potentially compromised account.
+
+---
+
+## Purpose
+
+- Investigate user activity
+- Review authentication history
+- Identify suspicious behavior
+- Support incident response
+
+---
+
+## Data Source
+
+| Property | Value |
+|----------|-------|
+| Table | SecurityEvent |
+| Platform | Microsoft Sentinel |
+
+---
+
+## KQL Query
+
+```kusto
+SecurityEvent
+| where Account == "\\FAGNER"
+```
+
+Replace **FAGNER** with the account under investigation.
+
+---
+
+## Expected Output
+
+The query returns all security events involving the specified account.
+
+Typical events include:
+
+- Successful Logon
+- Failed Logon
+- Logoff
+- Privilege Assignment
+
+---
+
+## Investigation Guidance
+
+Review:
+
+- Authentication timeline
+- Login frequency
+- Source systems
+- Source IP addresses
+- Privileged activities
+
+---
+
+## MITRE ATT&CK Mapping
+
+| Tactic | Technique |
+|---------|-----------|
+| Valid Accounts | T1078 |

@@ -1,0 +1,20 @@
+Overview
+
+This project documents the design and implementation of a cloud-based Security Information and Event Management (SIEM) lab built using Microsoft Sentinel and Azure Log Analytics.
+
+The objective was to simulate a practical security monitoring environment in which an internet-facing virtual machine generated real-world authentication telemetry that could be collected, analyzed, and converted into actionable security detections.
+
+During the observation period, the exposed honeypot environment recorded more than 52,000 authentication attempts within approximately 30 minutes, demonstrating the volume of automated scanning and credential-based attacks continuously targeting publicly accessible systems.
+
+The project focuses on:
+
+Centralized security log collection
+Authentication and network telemetry analysis
+KQL-based threat hunting
+Detection engineering
+Microsoft Sentinel analytics rules
+MITRE ATT&CK mapping
+Incident investigation
+SIEM architecture and data flow
+
+Disclaimer: This project was conducted in a controlled Azure lab environment using infrastructure owned and managed by the author. No unauthorized systems were accessed or tested.

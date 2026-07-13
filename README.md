@@ -1,4 +1,4 @@
-# Enterprise SIEM Architecture & Threat Detection Lab
+# Detect and Investigate Unauthorized Login Attempts Using Microsoft Sentinel in an Azure SOC Lab
 
 # Overview
 
